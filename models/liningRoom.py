@@ -1,0 +1,2 @@
+class LivingRoom(Room):
+    pass
