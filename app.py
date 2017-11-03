@@ -4,13 +4,15 @@
         add_person <person_name> <FELLOW|STAFF> [wants_accommodation]
         dojo (-h | --help | --version)
     Options:
+        type_room  Type of room to create. only office or livingspace
+        room_name  Name of room being created
         -h, --help  Show this screen and exit.
 """
 
 import sys
 import cmd
 from termcolor import colored
-from models.fellow import Fellow
+from models.dojo import Dojo
 from docopt import docopt, DocoptExit
 
 def docopt_cmd(func):
@@ -50,15 +52,14 @@ class DojoInteractive(cmd.Cmd):
     @docopt_cmd
     def do_create_room(self, args):
         """Usage: create_room <room_type> <room_name>..."""
-        for name in args['<name>']:
+        for name in args['<room_name>']:
             print(name)
 
 
     @docopt_cmd
     def do_add_person(self, arg):
         """Usage: add_person <person_name> <person_type> [<wants_accommodation>] """
-        per=Fellow(arg['<person_name>'])
-        print(per.name)
+        print(arg)
 
 
     def do_exit(self, arg):

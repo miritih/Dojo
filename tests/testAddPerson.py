@@ -2,6 +2,7 @@ import unittest
 from models.dojo import Dojo
 
 class TestAddPerson(unittest.TestCase):
+    """add_person command testcases"""
     def setUp(self):
         self.dojo=Dojo()
 
@@ -20,7 +21,11 @@ class TestAddPerson(unittest.TestCase):
         mwenda = self.dojo.add_person("mwenda", "staff")
         new_count = len(self.dojo.all_employees)
         self.assertEqual((new_count - employee_count), 1)
+        
     def test_it_fails_with_existing_record(self):
         person = self.dojo.add_person('mwenda','Fellow','Y')
         overwrite = self.dojo.add_person('mwenda', 'Fellow', 'Y')
-        self.assertTrue(overwrite_f == 'Person Mwenda exists!')
+        self.assertTrue(overwrite,'Person Mwenda exists!')
+ 
+if __name__ == '__main__':
+    unittest.main()
