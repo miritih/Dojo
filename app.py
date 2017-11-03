@@ -10,6 +10,7 @@
 import sys
 import cmd
 from termcolor import colored
+from models.fellow import Fellow
 from docopt import docopt, DocoptExit
 
 def docopt_cmd(func):
@@ -45,21 +46,26 @@ class DojoInteractive(cmd.Cmd):
     intro = colored('Starting Dojo App.....', 'green', attrs=['bold'])
     prompt = colored('DOJO >>>', 'red', attrs=['bold','blink'])
 
+
     @docopt_cmd
     def do_create_room(self, args):
-        """create_room <room_type> <room_name>..."""
+        """Usage: create_room <room_type> <room_name>..."""
         for name in args['<name>']:
             print(name)
 
+
     @docopt_cmd
     def do_add_person(self, arg):
-        """ add_person <person_name> <FELLOW|STAFF> [wants_accommodation] """
-        print(arg)
+        """Usage: add_person <person_name> <person_type> [<wants_accommodation>] """
+        per=Fellow(arg['<person_name>'])
+        print(per.name)
+
 
     def do_exit(self, arg):
         """Quits out of Interactive Mode."""
         print('Good Bye!')
         exit()
+
 if __name__=="__main__":
     print(__doc__)
     DojoInteractive().cmdloop()
