@@ -51,6 +51,7 @@ class DojoInteractive(cmd.Cmd):
     @docopt_cmd
     def do_create_room(self, args):
         """Usage: create_room <room_type> <room_name>..."""
+        self.dojo=Dojo()
         for name in args['<room_name>']:
             room=self.dojo.create_room(name,args['<room_type>'])
             print(colored(room[0],room[1], attrs=['bold']))
@@ -63,7 +64,7 @@ class DojoInteractive(cmd.Cmd):
             person=self.dojo.add_person(arg['<person_name>'],arg['<person_type>'],arg['<wants_accommodation>'])
         else:
             person=self.dojo.add_person(arg['<person_name>'],arg['<person_type>'])
-        print(person)
+        print(colored(person[0],person[1])
 
     def do_exit(self, arg):
         """Quits out of Interactive Mode."""

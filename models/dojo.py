@@ -16,7 +16,7 @@ class Dojo(object):
     def create_room(self, name, room_type):
         if not isinstance(name, str):
                 return ['Room names can only be strings!','red']
-        if room_type not in ['office', 'livingroom']:
+        if room_type.lower() not in ['office', 'livingroom']:
             return ['Only offices and livingrooms allowed!','red']
         if name in self.rooms:
             return ['Room {} already exists!'.format(name),'red']
@@ -68,7 +68,7 @@ class Dojo(object):
                         room = random.choice(list(self.livingrooms))
                         if len(self.livingrooms[room]) < 4:
                             self.livingrooms[room].append(name)
-                            print('Fellow %s has been assigned livingroom %s!' % (name, room))
+                            print(['Fellow %s has been assigned livingroom %s!' % (name, room),'red'])
                             break
                         if room not in checked_livingspaces:
                             checked_livingrooms.append(room)
