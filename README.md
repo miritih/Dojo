@@ -7,5 +7,3 @@ Office space allocation CLI application.
 ### Instalation
 #### credits
 * eric mwenda
-
-
