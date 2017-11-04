@@ -10,18 +10,27 @@ class TestCreateRoom(unittest.TestCase):
     def test_room_type_can_only_be_office_or_livingspace(self):
         room1=self.dojo.create_room("room1","room")
         error="Only offices and livingspaces allowed!"
-        self.assertTrue(error,room1)
-        self.assertRaises(RuntimeError, self.dojo.create_room,"room1","room")
+        self.assertTrue(error,room1[0])
         
     
     def test_room_name_only_string(self):
-        pass
+        room2=self.dojo.create_room(1212,1212)
+        err='names and person type should be a strings!'
+        self.assertTrue(err,room2[0])
     
     def test_cannot_create_duplicate_rooms(self):
-        pass
-    
-    def test_room_created_successfully(self):
-        pass
+        room=self.dojo.create_room("stive", "office")
+        dup=self.dojo.create_room("stive", "office")
+        err= "Room stive already exists!"
+        self.assertEqual(err,dup[0])
+
+    def test_room_created_successfully(self): 
+        initial_room_count = len(self.dojo.rooms)
+        blue_office = self.dojo.create_room("Blue", "office")
+        self.assertTrue(blue_office)
+        new_room_count = len(self.dojo.rooms)
+        self.assertEqual(new_room_count - initial_room_count, 1)
+      
     
 if __name__ == '__main__':
     unittest.main()
