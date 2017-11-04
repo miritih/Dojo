@@ -9,6 +9,8 @@ __pycache__/
 # Distribution / packaging
 .Python
 dojo_env/
+Dojo_env/
+.vscode
 build/
 develop-eggs/
 dist/
