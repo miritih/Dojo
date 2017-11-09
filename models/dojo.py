@@ -27,9 +27,9 @@ class Dojo(object):
         else:
             class_=getattr(sys.modules[__name__], room_type.capitalize())
             room = class_(name)
-            self.rooms[name]=[room_type.lower()] #dict of all rooms.
+            self.rooms[name]=[] #dict of all rooms.
             if room_type.lower()=='office':
-                self.offices[name] = room.occupants
+                self.offices[name] = []
             else:
                 self.livingrooms[name] = room.occupants
             return ['{} {} has been created successfully!'.format(room_type.capitalize(),name),'green']    
@@ -88,6 +88,7 @@ class Dojo(object):
             office = random.choice(list(self.offices))
             if len(self.offices[office]) < occupants:
                 self.offices[office].append(name)
+                self.rooms[office].append(name)
                 print(colored('{} has been assigned office {}!'.format(name,office),"green"))
                 break
             if office not in checked_offices:
@@ -95,6 +96,15 @@ class Dojo(object):
                 if checked_offices == offices_list:
                     print(colored('All offices are full, create a new office before recruiting!',"red"))
                     break
+    
+    def print_room(self,name):
+        """Prints  the names of all the people in room_name on the screen."""
+        count=1
+        for person in self.rooms[name]:
+            print (colored("{}: {}".format(count,person.title()),"cyan"))
+            count+=1
+        return "EOF List"
+        
 
     
     

@@ -4,6 +4,3 @@ class Office(Room):
         self.name = office_name
         self.capacity = 6
         self.occupants = []
-        
-    def create_office(self,name):
-        return ['An office called {} has been created successfully!'.format(name), 'green']

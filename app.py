@@ -2,10 +2,14 @@
     Usage:
         create_room <type_room> <room_name>...
         add_person <person_name> <FELLOW|STAFF> [wants_accommodation]
+        print_allocations [-o=filename]
+        print_unallocated [-o=filename]
+        print_room <room_name>
         dojo (-h | --help | --version)
     Options:
         type_room  Type of room to create. only office or livingspace
         room_name  Name of room being created
+        print_room <room_name>  Prints  the names of all the people in room_name on the screen.
         -h, --help  Show this screen and exit.
 """
 
@@ -65,7 +69,22 @@ class DojoInteractive(cmd.Cmd):
         else:
             person=self.dojo.add_person(arg['<person_name>'],arg['<person_type>'])
         print(person)
-
+        
+    @docopt_cmd
+    def do_print_room(self,arg):
+        """Usage: print_room <room_name> """
+        print(colored("Names of all the people in Room "+arg['<room_name>'],"magenta"))
+        results=self.dojo.print_room(arg['<room_name>'])
+        print(results)
+        
+    @docopt_cmd
+    def do_print_allocations(self,arg):
+        pass
+    
+    @docopt_cmd
+    def do_print_unallocated(self,arg):
+        pass
+    
     def do_exit(self, arg):
         """Quits out of Interactive Mode."""
         print('Good Bye!')
