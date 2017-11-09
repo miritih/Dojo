@@ -63,8 +63,9 @@ class DojoInteractive(cmd.Cmd):
     @docopt_cmd
     def do_add_person(self, arg):
         """Usage: add_person <person_name> <person_type> [<wants_accommodation>] """
-       
-        if arg['<wants_accommodation>'] != None:
+        if arg['<wants_accommodation>'] not in ['y','Y','YES','yes','YEAH', 'yeah',None]:
+            person = (colored("{} is not a valid paremeter, see help for Usage".format(arg['<wants_accommodation>']),"red"))
+        elif arg['<wants_accommodation>'] != None:
             person=self.dojo.add_person(arg['<person_name>'],arg['<person_type>'],arg['<wants_accommodation>'])
         else:
             person=self.dojo.add_person(arg['<person_name>'],arg['<person_type>'])
@@ -79,15 +80,22 @@ class DojoInteractive(cmd.Cmd):
         
     @docopt_cmd
     def do_print_allocations(self,arg):
-        pass
-    
+        """Usage: print_allocations [<filename>]"""
+        if arg["<filename>"]:
+            file = open(".files/%s"%(arg["<filename>"]), "w+")
+            file.write(self.dojo.print_allocations())
+            print(colored('allocations successfully added to file', "green"))
+            file.close()
+        else:
+            print(self.dojo.print_allocations())
+
     @docopt_cmd
     def do_print_unallocated(self,arg):
         pass
     
     def do_exit(self, arg):
         """Quits out of Interactive Mode."""
-        print('Good Bye!')
+        print(colored('Good Bye!',"green"))
         exit()
 
 if __name__=="__main__":
