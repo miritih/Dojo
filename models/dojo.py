@@ -15,6 +15,7 @@ class Dojo(object):
         self.staff = []
         self.rooms = {}
         self.all_employees = []
+        self.unallocated = []
         self.accomodated_fellows = []
  
     def create_room(self, name, room_type):
@@ -49,13 +50,15 @@ class Dojo(object):
                     # call randomize method
                     self.assign_random_room(name, 6, 'office')
                 else:
+                    self.unallocated.append(name)
                     print(colored('No office to assign!',"red"))
                 if wants_accomodation.lower() in ['y','yes','yeah'] and self.livingrooms:
                     self.accomodated_fellows.append(name)
                     # call randomize method
                     self.assign_random_room(name, 4, "livingroom")
                 else:
-                     print(colored('No Livingroom to assign OR You chose not to be accomodated !',"cyan"))
+                    self.unallocated.append(name)
+                    print(colored('No Livingroom to assign OR You chose not to be accomodated !',"cyan"))
                 return (colored('Fellow %s has been added successfully!' % (name),"green"))
                 
             elif person_type.lower() == 'staff':
@@ -100,12 +103,28 @@ class Dojo(object):
 
     def print_allocations(self):
         """ Prints a list of allocations onto the screen."""
+        if not self.rooms:
+            return (colored("No allocations available","cyan"))
         for room in self.rooms:
-            print(room)
-            print("-"*30)
-            print(', '.join(self.rooms[room]))
+            print(room.upper())
+            print("-"*50)
+            if len(self.rooms[room])>0:
+                print(', '.join(self.rooms[room]))
+            else:
+                print("No allocations in this room")
             print("")
-        
+        return " "
+    
+    def print_unallocated(self):
+        """Prints the names of all unallocated people."""
+        if len(self.unallocated)<=0:
+            return colored("No unallocated Employeee at the moment!","red")
+        number=0
+        for un_allocated in self.unallocated:
+            number += 1
+            print ("{}: {}".format(number,un_allocated.title()))
+        return ("{} names printed".format(number))
+       
             
 
     

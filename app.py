@@ -18,6 +18,7 @@ import cmd
 from termcolor import colored
 from models.dojo import Dojo
 from docopt import docopt, DocoptExit
+import sys
 
 def docopt_cmd(func):
     """
@@ -80,19 +81,28 @@ class DojoInteractive(cmd.Cmd):
         
     @docopt_cmd
     def do_print_allocations(self,arg):
-        """Usage: print_allocations [<filename>]"""
-        if arg["<filename>"]:
-            file = open(".files/%s"%(arg["<filename>"]), "w+")
-            file.write(self.dojo.print_allocations())
+        """Usage: print_allocations [-o]"""
+        if arg["-o"]:
+            original = sys.stdout
+            sys.stdout = open("files/allocations.txt", "w")
+            self.dojo.print_allocations()
+            sys.stdout = original
             print(colored('allocations successfully added to file', "green"))
-            file.close()
         else:
             print(self.dojo.print_allocations())
 
     @docopt_cmd
     def do_print_unallocated(self,arg):
-        pass
-    
+        """Usage: print_unallocated [-o] """
+        if arg["-o"]:
+            close = sys.stdout
+            sys.stdout = open("files/unallocations.txt", "w")
+            self.dojo.print_unallocated()
+            sys.stdout = close
+            print(colored('unallocations successfully added to file', "green"))
+        else:
+            print(self.dojo.print_unallocated())
+        
     def do_exit(self, arg):
         """Quits out of Interactive Mode."""
         print(colored('Good Bye!',"green"))
