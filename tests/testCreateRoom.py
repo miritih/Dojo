@@ -9,8 +9,8 @@ class TestCreateRoom(unittest.TestCase):
         
     def test_room_type_can_only_be_office_or_livingspace(self):
         room1=self.dojo.create_room("room1","room")
-        error="Only offices and livingspaces allowed!"
-        self.assertTrue(error,room1[0])
+        error="Only offices and livingrooms allowed!"
+        self.assertEqual(error,room1[0])
         
     
     def test_room_name_only_string(self):

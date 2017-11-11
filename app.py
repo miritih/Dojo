@@ -2,10 +2,14 @@
     Usage:
         create_room <type_room> <room_name>...
         add_person <person_name> <FELLOW|STAFF> [wants_accommodation]
+        print_allocations [-o=filename]
+        print_unallocated [-o=filename]
+        print_room <room_name>
         dojo (-h | --help | --version)
     Options:
         type_room  Type of room to create. only office or livingspace
         room_name  Name of room being created
+        print_room <room_name>  Prints  the names of all the people in room_name on the screen.
         -h, --help  Show this screen and exit.
 """
 
@@ -14,6 +18,7 @@ import cmd
 from termcolor import colored
 from models.dojo import Dojo
 from docopt import docopt, DocoptExit
+import sys
 
 def docopt_cmd(func):
     """
@@ -59,16 +64,48 @@ class DojoInteractive(cmd.Cmd):
     @docopt_cmd
     def do_add_person(self, arg):
         """Usage: add_person <person_name> <person_type> [<wants_accommodation>] """
-       
-        if arg['<wants_accommodation>'] != None:
+        if arg['<wants_accommodation>'] not in ['y','Y','YES','yes','YEAH', 'yeah',None]:
+            person = (colored("{} is not a valid paremeter, see help for Usage".format(arg['<wants_accommodation>']),"red"))
+        elif arg['<wants_accommodation>'] != None:
             person=self.dojo.add_person(arg['<person_name>'],arg['<person_type>'],arg['<wants_accommodation>'])
         else:
             person=self.dojo.add_person(arg['<person_name>'],arg['<person_type>'])
         print(person)
+        
+    @docopt_cmd
+    def do_print_room(self,arg):
+        """Usage: print_room <room_name> """
+        print(colored("Names of all the people in Room "+arg['<room_name>'],"magenta"))
+        results=self.dojo.print_room(arg['<room_name>'])
+        print(results)
+        
+    @docopt_cmd
+    def do_print_allocations(self,arg):
+        """Usage: print_allocations [-o]"""
+        if arg["-o"]:
+            original = sys.stdout
+            sys.stdout = open("files/allocations.txt", "w")
+            self.dojo.print_allocations()
+            sys.stdout = original
+            print(colored('allocations successfully added to file', "green"))
+        else:
+            print(self.dojo.print_allocations())
 
+    @docopt_cmd
+    def do_print_unallocated(self,arg):
+        """Usage: print_unallocated [-o] """
+        if arg["-o"]:
+            close = sys.stdout
+            sys.stdout = open("files/unallocations.txt", "w")
+            self.dojo.print_unallocated()
+            sys.stdout = close
+            print(colored('unallocations successfully added to file', "green"))
+        else:
+            print(self.dojo.print_unallocated())
+        
     def do_exit(self, arg):
         """Quits out of Interactive Mode."""
-        print('Good Bye!')
+        print(colored('Good Bye!',"green"))
         exit()
 
 if __name__=="__main__":
