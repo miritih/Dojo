@@ -1,7 +1,11 @@
 from models.fellow import Fellow
 from models.staff import Staff
-from models.livingRoom import LivingRoom
+from models.livingroom import Livingroom
 from models.office import Office
+from termcolor import colored
+import sys
+import random
+
 
 class Dojo(object):
     def __init__(self):
@@ -12,7 +16,7 @@ class Dojo(object):
         self.rooms = {}
         self.all_employees = []
         self.accomodated_fellows = []
-
+ 
     def create_room(self, name, room_type):
         if not isinstance(name, str):
                 return ['Room names can only be strings!','red']
@@ -21,16 +25,14 @@ class Dojo(object):
         if name in self.rooms:
             return ['Room {} already exists!'.format(name),'red']
         else:
-            if room_type.lower() == 'office':
-                self.room = Office(name)
-                self.offices[name] = self.room.occupants 
-                self.rooms[name] = [room_type, self.room.occupants]
-                return ['An office called {} has been created successfully!'.format(name),'green']
-            elif room_type.lower() == 'livingroom':
-                self.room = LivingRoom(name)
-                self.livingrooms[name] = self.room.occupants
-                self.rooms[name] = [room_type, self.room.occupants]
-                return ['A LivingRoom called {} has been created successfully!'.format(name),'green']
+            class_=getattr(sys.modules[__name__], room_type.capitalize())
+            room = class_(name)
+            self.rooms[name]=[room_type.lower()] #dict of all rooms.
+            if room_type.lower()=='office':
+                self.offices[name] = room.occupants
+            else:
+                self.livingrooms[name] = room.occupants
+            return ['{} {} has been created successfully!'.format(room_type.capitalize(),name),'green']    
               
     def add_person(self, name, person_type, wants_accomodation='N'):
         """implementation of add_person command. create a staff or a fellow and assign them a room"""
@@ -40,66 +42,59 @@ class Dojo(object):
             return 'Person type can only be a fellow or a staff!'
         else:
             if person_type.lower() == 'fellow':
-                fellow = Fellow(name) #create an instance of Fellow
-                self.fellows.append(name)
-                self.all_employees.append(name)
+               # fellow = Fellow(name) #create an instance of Fellow
+                self.fellows.append(name) #append to list of all fellows
+                self.all_employees.append(name) # append to list of all 
                 if self.offices:
-                    offices_list = list(self.offices.keys()) #create alist of offices
-                    checked_offices = [] #store list of offices checked to test if full andassign employee
-                    while True:
-                        office = random.choice(list(self.offices))
-                        if len(self.offices[office]) < 6:
-                            self.offices[office].append(name)
-                            print('Fellow {} has been assigned office {}!'.format(name,office))
-                            break
-                        if office not in checked_offices:
-                            checked_offices.append(office)
-                        if checked_offices == offices_list:
-                            print('All offices are full, create a new office before recruiting new members!')
-                            break
+                    self.assign_random_office(name,6)
                 else:
-                    print('No office to assign!')
-                if wants_accomodation.lower() in ['y','yes','yeah']:
-                    self.accomodated_fellows.append(name)
+                    print(colored('No office to assign!',"red"))
                 if wants_accomodation.lower() in ['y','yes','yeah'] and self.livingrooms:
-                    livingrooms_list = list(self.livingspaces.keys())
-                    checked_livingrooms = []
+                    self.accomodated_fellows.append(name)
+                    livingrooms_list = list(self.livingrooms.keys()) #list of all livingrooms
+                    checked_livingrooms = [] #add room here afer each check. to avoid checking same room twice
                     while True:
                         room = random.choice(list(self.livingrooms))
                         if len(self.livingrooms[room]) < 4:
                             self.livingrooms[room].append(name)
-                            print(['Fellow %s has been assigned livingroom %s!' % (name, room),'red'])
+                            print(colored('%s has been assigned livingroom %s!' % (name, room),'green'))
                             break
-                        if room not in checked_livingspaces:
+                        if room not in checked_livingrooms:
                             checked_livingrooms.append(room)
                         if checked_livingrooms == livingrooms_list:
-                            print('All livingrooms are full at the moment!')
+                            print(colored('All livingrooms are full at the moment!',"red"))
                             break
-                return ('Fellow %s has been added successfully!' % (name))
+                else:
+                     print(colored('No Livingroom to assign OR You choose not to be accomodated !',"cyan"))
+                return (colored('Fellow %s has been added successfully!' % (name),"green"))
+                
             elif person_type.lower() == 'staff':
                 if wants_accomodation.lower() in ['y','yes','yeah']:
-                    print('Staff can not be allocated livingrooms!')
-                staff = Staff(name)
+                    print(colored('Staff can not be allocated livingrooms!',"red"))
+                #staff = Staff(name)
                 self.staff.append(name)
                 self.all_employees.append(name)
                 if self.offices:
-                    offices_list = list(self.offices.keys()) #create alist of offices
-                    checked_offices = [] #store list of offices checked to test if full andassign employee
-                    while True:
-                        office = random.choice(list(self.offices))
-                        if len(self.offices[office]) < 6:
-                            self.offices[office].append(name)
-                            print('Staff {} has been assigned office {}!'.format(name,office))
-                            break
-                        if office not in checked_offices:
-                            checked_offices.append(office)
-                        if checked_offices == offices_list:
-                            print('All offices are full, create a new office before recruiting!')
-                            break
+                    self.assign_random_office(name,6) #call assign_random_office
                 else:
-                    print('No office to assign!')
-                return ('Staff %s has been added successfully!' % (name))
-
+                    print(colored('No office to assign!',"red"))
+                return (colored('Staff %s has been added successfully!' % (name),"green"))
+                
+    def assign_random_office(self,name,occupants):
+        """Method to randomize office allocation"""
+        offices_list = list(self.offices.keys()) #create alist of offices
+        checked_offices = [] #store list of offices checked to test if full andassign employee
+        while True:
+            office = random.choice(list(self.offices))
+            if len(self.offices[office]) < occupants:
+                self.offices[office].append(name)
+                print(colored('{} has been assigned office {}!'.format(name,office),"green"))
+                break
+            if office not in checked_offices:
+                checked_offices.append(office)
+                if checked_offices == offices_list:
+                    print(colored('All offices are full, create a new office before recruiting!',"red"))
+                    break
 
     
     
