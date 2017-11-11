@@ -39,14 +39,14 @@ class Dojo(object):
               
     def add_person(self, name, person_type, wants_accomodation='N'):
         """implementation of add_person command. create a staff or a fellow and assign them a room"""
-        name=name.title()
         if not isinstance(name, str) or not isinstance(person_type, str):
             return 'names and person type should be a strings!'
         if person_type.lower() not in ['fellow', 'staff']:
             return 'Person type can only be a fellow or a staff!'
-        if name in self.all_employees:
+        if name.title() in self.all_employees:
             return (colored('oops!! look like someome with this name (%s) alredy exist!' % (name), "red"))
         else:
+            name = name.title()
             # append to list of all employees
             self.all_employees.append(name)
             if person_type.lower() == 'fellow':
@@ -138,15 +138,15 @@ class Dojo(object):
     def reallocate_person(self,name,room_name):
         """reallocate_person"""
         name=name.title()
-        capacity = self.room_capacity[room_name]
-        if len(self.rooms[room_name]) >= capacity:
-           return colored("Opps! Room %s is fully packed!" % (room_name), "red")
         if name not in self.all_employees:
             return colored("Person %s does not exist!" % (name), "red")
         if room_name not in self.rooms:
             return colored("Room %s does not exist!" % (room_name), "red")
         if name in self.rooms[room_name]:
             return colored("person %s already assigned room %s" % (name, room_name), "red")
+        capacity = self.room_capacity[room_name]
+        if len(self.rooms[room_name]) >= capacity:
+           return colored("Opps! Room %s is fully packed!" % (room_name), "red")
         print(colored("Removing %s from current room if assigned any" % (name), "cyan"))
         #remove name from current room
         [self.rooms[room].remove(person) for room in self.rooms for person in self.rooms[room] if person == name]

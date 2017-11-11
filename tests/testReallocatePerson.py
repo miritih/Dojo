@@ -11,7 +11,7 @@ class TestReallocatePerson(unittest.TestCase):
         """test_person_exists"""
         self.dojo.create_room("red", "office")
         reallocate = self.dojo.reallocate_person("mwenda", "red")
-        msg = colored("Person mwenda does not exist!", "red")
+        msg = colored("Person Mwenda does not exist!", "red")
         self.assertEqual(reallocate, msg)
     def test_room_exists(self):
         """test_room_exists"""
