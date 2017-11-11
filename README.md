@@ -42,12 +42,3 @@ quits application
 
 #### credits
 * eric mwenda
-
-
-
-
-Tests
-
-Run tests with nosetests
-
-License: CocoaPods
