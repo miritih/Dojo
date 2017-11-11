@@ -1,12 +1,13 @@
 """
     Usage:
-        create_room <type_room> <room_name>...
-        add_person <person_name> <FELLOW|STAFF> [wants_accommodation]
-        reallocate_person <person_name> <new_room_name>
-        print_allocations [-o=filename]
-        print_unallocated [-o=filename]
-        print_room <room_name>
-        load_people
+        dojo create_room <type_room> <room_name>...
+        dojo add_person <person_name> <FELLOW|STAFF> [wants_accommodation]
+        dojo reallocate_person <person_name> <new_room_name>
+        dojo print_allocations [-o=filename]
+        dojo print_unallocated [-o=filename]
+        dojo print_room <room_name>
+        dojo load_people
+        dojo q
 
         dojo (-h | --help | --version)
     Options:
@@ -15,6 +16,7 @@
         <room_name>  Name of room being created
         <person_name> name of employee
         <new_room_name> new room to reallocate
+        q quits app
         -o prints output to a file
         -h, --help  Show this screen and exit.
 """
@@ -95,9 +97,9 @@ class DojoInteractive(cmd.Cmd):
             print(self.dojo.print_allocations())
 
     @docopt_cmd
-    def do_print_unallocated(self, arg):
+    def do_print_unallocated(self, args):
         """Usage: print_unallocated [-o] """
-        if arg["-o"]:
+        if args["-o"]:
             sys.stdout = open("files/unallocations.txt", "w")
             self.dojo.print_unallocated()
             sys.stdout = self.close
@@ -105,12 +107,16 @@ class DojoInteractive(cmd.Cmd):
         else:
             print(self.dojo.print_unallocated())
     @docopt_cmd
-    def do_reallocate_person(self,arg):
+    def do_reallocate_person(self, arg):
         """Usage: reallocate_person <person_name> <new_room_name>"""
         reallocate = self.dojo.reallocate_person(arg['<person_name>'], arg['<new_room_name>'])
         print(reallocate)
+    @docopt_cmd
+    def do_load_people(self,arg):
+        """Usage: load_people"""
+        print(self.dojo.load_people())
 
-    def do_exit(self, arg):
+    def do_q(self,arg):
         """Quits out of Interactive Mode."""
         print(colored('Good Bye!', "green"))
         exit()
