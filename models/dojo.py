@@ -96,6 +96,7 @@ class Dojo(object):
             if office not in checked:
                 checked.append(office)
                 if checked == list_:
+                    self.unallocated.append(name)
                     print(colored('All %ss are full at the moment!'%(room_type), "red"))
                     return False
     
