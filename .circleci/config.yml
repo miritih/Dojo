@@ -48,7 +48,7 @@ jobs:
           command: |
             . venv/bin/activate
             ./cc-test-reporter before-build
-            nosetests tests --with-coverage --cover-xml
+            nosetests --with-coverage --cover-xml --cover-package=models
             ./cc-test-reporter after-build --exit-code $?
 
       - store_artifacts:
