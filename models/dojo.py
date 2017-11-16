@@ -3,6 +3,7 @@ from models.staff import Staff
 from models.livingroom import Livingroom
 from models.office import Office
 from termcolor import colored
+from models.db import Database
 import sys
 import random
 
@@ -18,6 +19,7 @@ class Dojo(object):
         self.all_employees = []
         self.unallocated = []
         self.accomodated_fellows = []
+        self.db = Database()
  
     def create_room(self, name, room_type):
         if not isinstance(name, str):
@@ -31,11 +33,14 @@ class Dojo(object):
             room = class_(name)
             self.rooms[name]=[] #dict of all rooms.
             self.room_capacity[name] = room.capacity
+            
             if room_type.lower()=='office':
                 self.offices[name] = []
             else:
-                self.livingrooms[name] = room.occupants
-            return ['{} {} has been created successfully!'.format(room_type.capitalize(),name),'green']    
+                self.livingrooms[name] = []
+            # insert into db
+            self.db.insert_room(name,room_type)
+            return ['{} {} has been created successfully!'.format(room_type.capitalize(),name),'green']  
               
     def add_person(self, name, person_type, wants_accomodation='N'):
         """implementation of add_person command. create a staff or a fellow and assign them a room"""
